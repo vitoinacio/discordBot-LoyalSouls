@@ -8,6 +8,7 @@ import {
 import { Command } from '../../structs/types/Command';
 import { addMute } from '../../api/mutes';
 import { getLogChannel } from '../../api/logsChannel';
+import { checkPermission } from '../../helpers/permissions';
 
 export default new Command({
   name: 'mute',
@@ -61,7 +62,7 @@ export default new Command({
     const tempoStr = options.getString('tempo'); // pode ser "30m", "1h", etc.
     let tempoMs: number | null = null;
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ ephemeral: false });
 
     const autor = interaction.member;
     if (!(autor instanceof GuildMember)) {
@@ -122,6 +123,24 @@ export default new Command({
       }
     }
 
+    if (!(interaction.member instanceof GuildMember)) {
+      return interaction.editReply({
+        content: '❌ Não foi possível validar seu cargo.',
+      });
+    }
+
+    const hasPermission = await checkPermission(
+      interaction.guildId!,
+      'mute',
+      interaction.member,
+    );
+
+    if (!hasPermission) {
+      return interaction.editReply({
+        content: '❌ Você não tem permissão para usar este comando.',
+      });
+    }
+
     // Verificações de bloqueio
     if (member.roles.cache.has(muteRole.id)) {
       return interaction.editReply({
@@ -166,7 +185,7 @@ export default new Command({
     try {
       await member.roles.add(muteRole!);
       await interaction.editReply({
-        content: `🔇 ${member.user.tag} foi mutado com sucesso${
+        content: `🔇 ${member.user.tag} foi mutado${
           tempoStr ? ` por ${tempoStr}` : ''
         }.`,
       });

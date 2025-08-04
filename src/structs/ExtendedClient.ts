@@ -62,7 +62,7 @@ export class ExtendedClient extends Client {
       })
       .catch((error) => {
         console.log(
-          `❌ an error occurred while trying to set the Sllash Commands (/): \n${error}`
+          `❌ an error occurred while trying to set the Slash Commands (/): \n${error}`
             .red,
         );
       });

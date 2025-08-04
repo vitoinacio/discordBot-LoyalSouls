@@ -7,6 +7,7 @@ import {
 import { Command } from '../../structs/types/Command';
 import { removeMute } from '../../api/mutes';
 import { getLogChannel } from '../../api/logsChannel';
+import { checkPermission } from '../../helpers/permissions';
 
 export default new Command({
   name: 'unmute',
@@ -45,6 +46,24 @@ export default new Command({
     }
 
     const autor = interaction.member as GuildMember;
+
+    if (!(interaction.member instanceof GuildMember)) {
+      return interaction.editReply({
+        content: '❌ Não foi possível validar seu cargo.',
+      });
+    }
+
+    const hasPermission = await checkPermission(
+      interaction.guildId!,
+      'mute',
+      interaction.member,
+    );
+
+    if (!hasPermission) {
+      return interaction.editReply({
+        content: '❌ Você não tem permissão para usar este comando.',
+      });
+    }
 
     // Verificações de hierarquia
     const botMember = interaction.guild.members.me;

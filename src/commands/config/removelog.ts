@@ -1,9 +1,11 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
+  GuildMember,
 } from 'discord.js';
 import { Command } from '../../structs/types/Command';
 import { removeLogChannel } from '../../api/logsChannel';
+import { checkPermission } from '../../helpers/permissions';
 
 export default new Command({
   name: 'removelog',
@@ -32,6 +34,24 @@ export default new Command({
     if (!interaction.guild) return;
 
     const tipo = options.getString('tipo', true);
+
+    if (!(interaction.member instanceof GuildMember)) {
+      return interaction.editReply({
+        content: '❌ Não foi possível validar seu cargo.',
+      });
+    }
+
+    const hasPermission = await checkPermission(
+      interaction.guildId!,
+      'setLogs',
+      interaction.member,
+    );
+
+    if (!hasPermission) {
+      return interaction.editReply({
+        content: '❌ Você não tem permissão para usar este comando.',
+      });
+    }
 
     try {
       const removed = await removeLogChannel(interaction.guild.id, tipo);

@@ -2,10 +2,12 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
+  GuildMember,
   TextChannel,
 } from 'discord.js';
 import { Command } from '../../structs/types/Command';
 import { setLogChannel } from '../../api/logsChannel';
+import { checkPermission } from '../../helpers/permissions';
 
 export default new Command({
   name: 'setlog',
@@ -20,6 +22,8 @@ export default new Command({
       choices: [
         { name: 'Mute', value: 'mute' },
         { name: 'Ban', value: 'ban' },
+        { name: 'expulsar', value: 'memberKick' },
+        { name: 'castigo', value: 'memberTimeout' },
         { name: 'Entrada de Membro', value: 'memberJoin' },
         { name: 'Saída de Membro', value: 'memberLeave' },
         { name: 'Entrada/Saída de Call', value: 'voiceState' },
@@ -44,6 +48,25 @@ export default new Command({
     const tipo = options.getString('tipo') as string;
 
     await interaction.deferReply({ ephemeral: true });
+
+    if (!(interaction.member instanceof GuildMember)) {
+      return interaction.reply({
+        content: '❌ Não foi possível validar seu cargo.',
+        ephemeral: true,
+      });
+    }
+
+    const hasPermission = await checkPermission(
+      interaction.guildId!,
+      'setLogs',
+      interaction.member,
+    );
+
+    if (!hasPermission) {
+      return interaction.editReply({
+        content: '❌ Você não tem permissão para usar este comando.',
+      });
+    }
 
     try {
       await setLogChannel(interaction.guild.id, tipo, canal.id);
