@@ -1,12 +1,12 @@
 {
   "name": "bot-loyalsouls",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc src/index.ts",
-    "start": "tsc src/index.ts && node ."
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "yarn build && node dist/index.js"
   },
   "dependencies": {
     "colors": "^1.4.0",
@@ -15,8 +15,9 @@
     "ts-lib": "^0.0.5"
   },
   "devDependencies": {
-    "@types/node": "^24.1.0",
+    "@types/node": "^20.4.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
   }
 }
