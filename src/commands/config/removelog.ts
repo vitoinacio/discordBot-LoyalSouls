@@ -35,6 +35,8 @@ export default new Command({
 
     const tipo = options.getString('tipo', true);
 
+     await interaction.deferReply({ ephemeral: false });
+
     if (!(interaction.member instanceof GuildMember)) {
       return interaction.editReply({
         content: '❌ Não foi possível validar seu cargo.',
@@ -57,21 +59,18 @@ export default new Command({
       const removed = await removeLogChannel(interaction.guild.id, tipo);
 
       if (removed) {
-        await interaction.reply({
+        await interaction.editReply({
           content: `🗑️ O canal de log do tipo **${tipo}** foi removido com sucesso.`,
-          ephemeral: true,
         });
       } else {
-        await interaction.reply({
+        await interaction.editReply({
           content: `⚠️ Nenhum log do tipo **${tipo}** estava configurado.`,
-          ephemeral: true,
         });
       }
     } catch (error) {
       console.error(error);
-      await interaction.reply({
+      await interaction.editReply({
         content: '❌ Ocorreu um erro ao tentar remover o log.',
-        ephemeral: true,
       });
     } finally {
       // Apaga a resposta após 5 segundos

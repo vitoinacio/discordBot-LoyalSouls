@@ -27,10 +27,17 @@ export default new Command({
       type: ApplicationCommandOptionType.String,
       required: false,
     },
+    {
+      name: 'motivo',
+      description: 'Motivo do mute',
+      type: ApplicationCommandOptionType.String,
+      required: false,
+    },
   ],
 
   async run({ interaction, options }) {
     const member = options.getMember('member');
+    const reason = options.getString('motivo') || 'Sem motivo fornecido';
 
     // Verificações básicas
     if (
@@ -216,6 +223,11 @@ export default new Command({
               {
                 name: '🔧 Mutado por',
                 value: `${interaction.user} \`(${interaction.user.id})\``,
+                inline: false,
+              },
+              {
+                name: '📄 Motivo',
+                value: reason,
                 inline: false,
               },
               tempoStr

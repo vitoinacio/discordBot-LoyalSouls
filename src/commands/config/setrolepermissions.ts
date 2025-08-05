@@ -16,8 +16,9 @@ export default new Command({
         { name: 'Mute', value: 'mute' },
         { name: 'Ban', value: 'ban' },
         { name: 'Kick', value: 'kick' },
-        { name: 'castigo', value: 'timeout' },
-        { name: 'setLogs', value: 'setLogs' },
+        { name: 'Clear', value: 'clear' },
+        { name: 'Castigo', value: 'timeout' },
+        { name: 'SetLogs', value: 'setLogs' },
       ],
     },
     {
