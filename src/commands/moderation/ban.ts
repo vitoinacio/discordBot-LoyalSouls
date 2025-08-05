@@ -11,20 +11,20 @@ import { getLogChannel } from '../../api/logsChannel';
 import { checkPermission } from '../../helpers/permissions';
 
 export default new Command({
-  name: 'kick',
-  description: 'Expulsa um membro do servidor',
+  name: 'ban',
+  description: 'bane um membro do servidor',
   type: ApplicationCommandType.ChatInput,
   defaultMemberPermissions: PermissionFlagsBits.KickMembers,
   options: [
     {
       name: 'member',
-      description: 'Membro a ser expulso',
+      description: 'Membro a ser banido',
       type: ApplicationCommandOptionType.User,
       required: true,
     },
     {
       name: 'motivo',
-      description: 'Motivo da expulsão',
+      description: 'Motivo do ban',
       type: ApplicationCommandOptionType.String,
       required: false,
     },
@@ -63,7 +63,7 @@ export default new Command({
 
     const hasPermission = await checkPermission(
       interaction.guildId!,
-      'kick',
+      'ban',
       interaction.member,
     );
 
@@ -76,45 +76,42 @@ export default new Command({
     // 🔒 Verificações de segurança
     if (member.id === bot.id) {
       return interaction.editReply({
-        content: '❌ Não posso me expulsar.',
+        content: '❌ Não posso me banir.',
       });
     }
 
     if (member.id === autor.id) {
       return interaction.editReply({
-        content: '❌ Você não pode se expulsar.',
+        content: '❌ Você não pode se banir.',
       });
     }
 
     if (bot.roles.highest.position <= member.roles.highest.position) {
       return interaction.editReply({
-        content: '❌ Não consigo expulsar alguém com cargo superior ao meu.',
+        content: '❌ Não consigo banir alguém com cargo superior ao meu.',
       });
     }
 
     if (autor.roles.highest.position <= member.roles.highest.position) {
       return interaction.editReply({
         content:
-          '❌ Você não pode expulsar alguém com cargo igual ou superior ao seu.',
+          '❌ Você não pode banir alguém com cargo igual ou superior ao seu.',
       });
     }
 
     try {
-      await member.kick(reason);
+      await member.ban({ reason });
       await interaction.editReply({
-        content: `✅ ${member.user.tag} foi expulso com sucesso.`,
+        content: `✅ ${member.user.tag} foi banido`,
       });
 
       // Envia para canal de log, se configurado
-      const logChannelId = await getLogChannel(
-        interaction.guild.id,
-        'memberKick',
-      );
+      const logChannelId = await getLogChannel(interaction.guild.id, 'ban');
       if (logChannelId) {
         const logChannel = interaction.guild.channels.cache.get(logChannelId);
         if (logChannel?.isTextBased()) {
           const embed = new EmbedBuilder()
-            .setTitle('🚪 Membro Expulso')
+            .setTitle('🚪 Membro Banido')
             .setColor('DarkOrange')
             .addFields(
               {
@@ -123,7 +120,7 @@ export default new Command({
                 inline: false,
               },
               {
-                name: '🔨 Expulso por',
+                name: '🔨 Banido por',
                 value: `${interaction.user} (\`${interaction.user.id}\`)`,
                 inline: false,
               },
@@ -139,9 +136,9 @@ export default new Command({
         }
       }
     } catch (error) {
-      console.error('Erro ao expulsar:', error);
+      console.error('Erro ao banir:', error);
       await interaction.editReply({
-        content: '❌ Ocorreu um erro ao tentar expulsar o membro.',
+        content: '❌ Ocorreu um erro ao tentar banir o membro.',
       });
     } finally {
       // Apaga a resposta após 5 segundos

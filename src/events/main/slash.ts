@@ -30,6 +30,10 @@ export default new Event({
           })
           .catch(() => {});
       }
+    } finally {
+      setTimeout(() => {
+        interaction.deleteReply().catch(() => null);
+      }, 5000);
     }
   },
 });

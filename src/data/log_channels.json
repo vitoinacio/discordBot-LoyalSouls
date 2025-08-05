@@ -8,5 +8,30 @@
     "guildId": "1400884368947413063",
     "type": "memberKick",
     "channelId": "1401986506536652981"
+  },
+  {
+    "guildId": "1400884368947413063",
+    "type": "ban",
+    "channelId": "1402058362912509993"
+  },
+  {
+    "guildId": "1400884368947413063",
+    "type": "greeting",
+    "channelId": "1402072635654799431"
+  },
+  {
+    "guildId": "1400884368947413063",
+    "type": "clear",
+    "channelId": "1402086106794561586"
+  },
+  {
+    "guildId": "1400884368947413063",
+    "type": "deletMenssage",
+    "channelId": "1402087636340047912"
+  },
+  {
+    "guildId": "1400884368947413063",
+    "type": "memberLeave",
+    "channelId": "1402089418168471624"
   }
 ]
